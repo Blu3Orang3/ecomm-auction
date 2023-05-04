@@ -7,6 +7,11 @@ import Signin from './auth/Signin';
 import Profile from './user/Profile';
 import EditProfile from './user/EditProfile';
 import PrivateRoute from './auth/PrivateRoute';
+import NewShop from './shop/NewShop';
+import Shops from './shop/Shops';
+import MyShops from './shop/MyShops';
+import Shop from './shop/Shop';
+import EditShop from './shop/EditShop';
 import Menu from './core/Menu';
 
 const MainRouter = () => {
@@ -23,6 +28,22 @@ const MainRouter = () => {
           path='/user/edit/:userId'
           element={<PrivateRoute component={EditProfile} />}
         />
+
+        <Route
+          path='/seller/shop/new'
+          element={<PrivateRoute component={NewShop} />}
+        />
+        <Route
+          path='/seller/shops'
+          element={<PrivateRoute component={MyShops} />}
+        />
+        <Route
+          path='/seller/shop/edit/:shopId'
+          element={<PrivateRoute component={EditShop} />}
+        />
+
+        <Route path='/shops/:shopId' element={<Shop />} />
+        <Route path='/shops/all' element={<Shops />} />
         <Route path='/user/:userId' element={<Profile />} />
       </Routes>
     </div>
