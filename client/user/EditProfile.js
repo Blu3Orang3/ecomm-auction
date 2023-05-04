@@ -5,6 +5,8 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
 import Icon from '@mui/material/Icon';
 import { makeStyles } from '@mui/styles';
 import auth from './../auth/auth-helper';
@@ -35,16 +37,20 @@ const useStyles = makeStyles((theme) => ({
     margin: 'auto',
     marginBottom: theme.spacing(2),
   },
+  subheading: {
+    marginTop: theme.spacing(2),
+    color: theme.palette.openTitle,
+  },
 }));
 
-export default function EditProfile(){
+export default function EditProfile() {
   const classes = useStyles();
-  const {userId} = useParams();
+  const { userId } = useParams();
   const [values, setValues] = useState({
     name: '',
     password: '',
     email: '',
-    open: false,
+    seller: false,
     error: '',
     redirectToProfile: false,
   });
@@ -64,7 +70,12 @@ export default function EditProfile(){
       if (data && data.error) {
         setValues({ ...values, error: data.error });
       } else {
-        setValues({ ...values, name: data.name, email: data.email });
+        setValues({
+          ...values,
+          name: data.name,
+          email: data.email,
+          seller: data.seller,
+        });
       }
     });
     return function cleanup() {
@@ -77,6 +88,7 @@ export default function EditProfile(){
       name: values.name || undefined,
       email: values.email || undefined,
       password: values.password || undefined,
+      seller: values.seller,
     };
     update(
       {
@@ -90,12 +102,20 @@ export default function EditProfile(){
       if (data && data.error) {
         setValues({ ...values, error: data.error });
       } else {
-        setValues({ ...values, userId: data._id, redirectToProfile: true });
+        auth.updateUser(data, () => {
+          setValues({ ...values, userId:data._id, redirectToProfile: true });
+        });
       }
     });
   };
   const handleChange = (name) => (event) => {
     setValues({ ...values, [name]: event.target.value });
+  };
+  const handleCheck = (event) => {
+    setValues((prevState) => ({
+      ...prevState,
+      seller: event.target.checked || false,
+    }));
   };
 
   if (values.redirectToProfile) {
@@ -136,6 +156,14 @@ export default function EditProfile(){
           margin='normal'
         />
         <br />{' '}
+        <Typography variant='subtitle1' className={classes.subheading}>
+          Seller Account
+        </Typography>
+        <FormControlLabel
+          control={<Switch checked={values.seller} onChange={handleCheck} />}
+          label={values.seller ? 'Active' : 'Inactive'}
+        />
+        <br />
         {values.error && (
           <Typography component='p' color='error'>
             <Icon color='error' className={classes.error}>
