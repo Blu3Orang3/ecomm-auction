@@ -12,14 +12,21 @@ const isActive = (location, path) => {
   if (location.pathname == path) return { color: '#ff4081' };
   else return { color: '#ffffff' };
 };
+const isPartActive = (location, path) => {
+  if (location.pathname == path) {
+    return { color: '#bef67a' };
+  } else {
+    return { color: '#ffffff' };
+  }
+};
 export default function Menu() {
   let location = useLocation();
   let navigate = useNavigate();
   return (
-    <AppBar position='static'>
+    <AppBar position='static' >
       <Toolbar>
         <Typography variant='h6' color='inherit'>
-          MERN Skeleton
+          MarketPlace
         </Typography>
         <Link to='/'>
           <IconButton aria-label='Home' style={isActive(location, '/')}>
@@ -29,8 +36,9 @@ export default function Menu() {
         <Link to='/users'>
           <Button style={isActive(location, '/users')}>Users</Button>
         </Link>
+
         {!auth.isAuthenticated() && (
-          <span>
+          <span> 
             <Link to='/signup'>
               <Button style={isActive(location, '/signup')}>Sign up</Button>
             </Link>
@@ -41,6 +49,14 @@ export default function Menu() {
         )}
         {auth.isAuthenticated() && (
           <span>
+            {auth.isAuthenticated().user.seller && (
+              <Link to='/seller/shops'>
+                <Button style={isPartActive(location, '/seller/shops')}>
+                  {' '}
+                  My Shops
+                </Button>
+              </Link>
+            )}
             <Link to={'/user/' + auth.isAuthenticated().user._id}>
               <Button
                 style={isActive(
