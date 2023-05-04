@@ -19,11 +19,15 @@ const UserSchema = new mongoose.Schema({
     default: Date.now,
   },
   updated: Date,
+  salt: String,
   hashed_password: {
     type: String,
     required: 'Password is required',
   },
-  salt: String,
+  seller: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 UserSchema.path('hashed_password').validate(function (v) {
