@@ -3,7 +3,7 @@ import extend from 'lodash/extend';
 import errorHandler from './../helpers/dbErrorHandler';
 import formidable from 'formidable';
 import fs from 'fs';
-import defaultImage from './../../client/assets/images/default.png';
+import defaultProductImage from './../../client/assets/images/defaultProduct.png';
 
 const create = (req, res, next) => {
   let form = new formidable.IncomingForm();
@@ -49,7 +49,7 @@ const productByID = async (req, res, next, id) => {
     req.product = product;
     next();
   } catch (err) {
-    return res.status('400').json({
+    return res.status(400).json({
       error: 'Could not retrieve product',
     });
   }
@@ -63,7 +63,7 @@ const photo = (req, res, next) => {
   next();
 };
 const defaultPhoto = (req, res) => {
-  return res.sendFile(process.cwd() + defaultImage);
+  return res.sendFile(process.cwd() + defaultProductImage);
 };
 
 const read = (req, res) => {

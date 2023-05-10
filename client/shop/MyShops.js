@@ -9,6 +9,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Icon from '@mui/material/Icon';
+import AddBoxIcon from '@mui/icons-material/AddBox';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Edit from '@mui/icons-material/Edit';
@@ -19,12 +20,12 @@ import { Navigate, Link } from 'react-router-dom';
 import DeleteShop from './DeleteShop';
 
 const useStyles = makeStyles((theme) => ({
-  root: theme.mixins.gutters({
+  root: {
     maxWidth: 600,
     margin: 'auto',
     padding: theme.spacing(3),
     marginTop: theme.spacing(5),
-  }),
+  },
   title: {
     margin: `${theme.spacing(3)}px 0 ${theme.spacing(3)}px ${theme.spacing(
       1
@@ -37,7 +38,10 @@ const useStyles = makeStyles((theme) => ({
   },
   leftIcon: {
     marginRight: '8px',
+    display: 'flex',
+    alignItems: 'center',
   },
+  centerIconImage: {},
 }));
 
 export default function MyShops() {
@@ -85,7 +89,10 @@ export default function MyShops() {
           <span className={classes.addButton}>
             <Link to='/seller/shop/new'>
               <Button color='primary' variant='contained'>
-                <Icon className={classes.leftIcon}>add_box</Icon> New Shop
+                <Icon className={classes.leftIcon}>
+                  <AddBoxIcon className={classes.centerIconImage} />
+                </Icon>{' '}
+                New Shop
               </Button>
             </Link>
           </span>

@@ -1,4 +1,5 @@
 import Shop from '../models/shop.model';
+import Product from '../models/product.model';
 import extend from 'lodash/extend';
 import errorHandler from './../helpers/dbErrorHandler';
 import formidable from 'formidable';
@@ -80,6 +81,7 @@ const listByOwner = async (req, res) => {
 
 const isOwner = (req, res, next) => {
   const isOwner = req.shop && req.auth && req.shop.owner._id == req.auth._id;
+
   if (!isOwner) {
     return res.status('403').json({
       error: 'User is not authorized',
@@ -124,9 +126,16 @@ const update = (req, res) => {
 const remove = async (req, res) => {
   try {
     let shop = req.shop;
-    let deletedShop = shop.remove();
+    console.log('--------------------------loading',shop._id);
+    let deletedShop = await Shop.deleteOne(shop._id)
+    // let deletedProducts = await Shop.deleteOne(shop._id)
+    console.log('--------------------------works',shop._id);
+    // let deletedShop = await shop.remove();
+   
     res.json(deletedShop);
+    
   } catch (err) {
+    console.log(err)
     return res.status(400).json({
       error: errorHandler.getErrorMessage(err),
     });

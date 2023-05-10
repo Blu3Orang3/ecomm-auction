@@ -19,10 +19,13 @@ import MainRouter from './../client/MainRouter';
 import { ServerStyleSheets } from '@mui/styles';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './../client/theme';
+import config from "../config/config";
 //end
 
 const CURRENT_WORKING_DIR = process.cwd();
 const app = express();
+
+const stripe = require("stripe")(config.stripe_test_secret_key);
 
 // comment out before building
 devBundle.compile(app);
@@ -33,9 +36,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(compress());
 // secure apps by setting various HTTP headers
-app.use(helmet());
+app.use(helmet({ contentSecurityPolicy: false }));
 // enable CORS - Cross Origin Resource Sharing
 app.use(cors());
+
 
 app.use('/dist', express.static(path.join(CURRENT_WORKING_DIR, 'dist')));
 
@@ -44,6 +48,36 @@ app.use('/', userRoutes);
 app.use('/', authRoutes);
 app.use('/', shopRoutes);
 app.use('/', productRoutes);
+
+// app.use(
+//   helmet.contentSecurityPolicy({
+//     directives: {
+//       ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+//       'script-src': [
+//         "'self'",
+//         'https://js.stripe.com',
+//         'https://js.stripe.com/v3/',
+//       ],
+//       'frame-src': [
+//         "'self'",
+//         'https://js.stripe.com',
+//         'https://hooks.stripe.com',
+//       ],
+//       'connect-src': [
+//         "'self'",
+//         'https://api.stripe.com',
+//         'https://maps.googleapis.com',
+//       ],
+//       'style-src': [
+//         "'self'",
+//         "'unsafe-inline'",
+//         'https://fonts.googleapis.com',
+//       ],
+//       'font-src': ["'self'", 'https://fonts.gstatic.com'],
+//     },
+//   })
+// );
+
 
 app.get('*', (req, res) => {
   const sheets = new ServerStyleSheets();

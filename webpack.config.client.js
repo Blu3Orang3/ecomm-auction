@@ -31,7 +31,11 @@ const config = {
   plugins: [
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.ProvidePlugin({
+      process: 'process/browser',
+    }),
   ],
+
   resolve: {
     alias: {
       'react-dom': '@hot-loader/react-dom',

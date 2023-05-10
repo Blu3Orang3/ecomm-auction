@@ -153,7 +153,7 @@ export default function EditShop() {
                 type='file'
               />
               <label htmlFor='icon-button-file'>
-                <Button variant='contained' color='default' component='span'>
+                <Button variant='contained' color='primary' component='span'>
                   Change Logo
                   <FileUpload />
                 </Button>

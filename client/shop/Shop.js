@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from "react-router";
+import { useParams } from 'react-router-dom';
 import { makeStyles } from '@mui/styles';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -7,7 +7,7 @@ import Typography from '@mui/material/Typography';
 import Avatar from '@mui/material/Avatar';
 import Grid from '@mui/material/Grid';
 import { read } from './api-shop.js';
-import Products from './../product/Products';
+import Products from "../product/Products.js";
 import { listByShop } from './../product/api-product.js';
 
 const useStyles = makeStyles((theme) => ({
@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Shop() {
   const classes = useStyles();
-  const {shopId}= useEffect()
+  const { shopId } = useParams();
   const [shop, setShop] = useState('');
   const [products, setProducts] = useState([]);
   const [error, setError] = useState('');

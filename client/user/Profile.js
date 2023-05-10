@@ -15,7 +15,10 @@ import Divider from '@mui/material/Divider';
 import DeleteUser from './DeleteUser';
 import auth from './../auth/auth-helper';
 import { read } from './api-user.js';
-import { Navigate, Link,useParams } from 'react-router-dom';
+import { Navigate, Link, useParams } from 'react-router-dom';
+import config from './../../config/config';
+import stripeButton from './../assets/images/stripeButton.png';
+// import MyOrders from './../order/MyOrders';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,7 +35,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Profile() {
   const classes = useStyles();
-  const {userId} = useParams();
+  const { userId } = useParams();
   const [user, setUser] = useState({});
   const [redirectToSignin, setRedirectToSignin] = useState(false);
   const jwt = auth.isAuthenticated();
@@ -79,6 +82,28 @@ export default function Profile() {
           {auth.isAuthenticated().user &&
             auth.isAuthenticated().user._id == user._id && (
               <ListItemSecondaryAction>
+                {user.seller &&
+                  (user.stripe_seller ? (
+                    <Button
+                      variant='contained'
+                      disabled
+                      className={classes.stripe_connected}
+                    >
+                      Stripe connected
+                    </Button>
+                  ) : (
+                    <a
+                      href={
+                        'https://connect.stripe.com/oauth/authorize?response_type=code&client_id=' +
+                        config.stripe_connect_test_client_id +
+                        '&scope=read_write'
+                      }
+                      className={classes.stripe_connect}
+                    >
+                      <img src={stripeButton} />
+                    </a>
+                  ))}
+
                 <Link to={'/user/edit/' + user._id}>
                   <IconButton aria-label='Edit' color='primary'>
                     <Edit />
@@ -95,6 +120,7 @@ export default function Profile() {
           />
         </ListItem>
       </List>
+      {/* <MyOrders /> */}
     </Paper>
   );
 }

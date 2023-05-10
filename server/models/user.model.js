@@ -28,6 +28,8 @@ const UserSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  stripe_seller: {},
+  stripe_customer: {},
 });
 
 UserSchema.path('hashed_password').validate(function (v) {

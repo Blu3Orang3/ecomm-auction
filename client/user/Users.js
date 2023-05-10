@@ -14,11 +14,12 @@ import ArrowForward from '@mui/icons-material/ArrowForward'
 import Person from '@mui/icons-material/Person'
 import {list} from './api-user';
 
-// root: theme.mixins.gutters({
-//   padding: theme.spacing(1),
-//   margin: theme.spacing(5)
-// }),
+
 const useStyles = makeStyles(theme => ({
+  root:{
+  padding: theme.spacing(1),
+  margin: theme.spacing(5)
+},
 
   gutters:{
     padding: theme.spacing(1),
