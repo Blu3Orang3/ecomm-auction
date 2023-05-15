@@ -6,12 +6,7 @@ import Typography from '@mui/material/Typography';
 import Icon from '@mui/material/Icon';
 import auth from './../auth/auth-helper';
 import cart from './cart-helper.js';
-import { Elements } from '@stripe/react-stripe-js';
 import PlaceOrder from './PlaceOrder';
-import { loadStripe } from '@stripe/stripe-js';
-import config from "../../config/config";
-
-const stripePromise = loadStripe(config.stripe_test_api_key);
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -160,9 +155,7 @@ export default function Checkout() {
         </Typography>
       )}
       <div>
-        <Elements stripe={stripePromise}>
-          <PlaceOrder checkoutDetails={values.checkoutDetails} />
-        </Elements>
+        <PlaceOrder checkoutDetails={values.checkoutDetails} />
       </div>
     </Card>
   );

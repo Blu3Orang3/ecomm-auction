@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import Icon from '@mui/material/Icon';
 import auth from './../auth/auth-helper';
 import cart from './cart-helper.js';
-import { CardElement, useStripe} from '@stripe/react-stripe-js';
+import { CardElement, useStripe,useElements} from '@stripe/react-stripe-js';
 import { create } from './../order/api-order.js';
 import { Navigate } from 'react-router-dom';
 
@@ -41,8 +41,7 @@ const useStyles = makeStyles((theme) => ({
 const PlaceOrder = (props) => {
   const classes = useStyles();
   const stripe = useStripe();
-  console.log('stripe', stripe, ' propsStripe--', props);
-  console.log(<CardElement />);
+  const elements = useElements();
   const [values, setValues] = useState({
     order: {},
     error: '',
@@ -52,10 +51,13 @@ const PlaceOrder = (props) => {
 
 
   const placeOrder = (props) => {
-    stripe.createToken().then((payload) => {
+    const cardElement = elements.getElement(CardElement);
+    stripe.createToken(cardElement).then((payload) => {
       if (payload.error) {
+        console.log('fail-----');
         setValues({ ...values, error: payload.error.message });
       } else {
+        console.log('pass1',payload)
         const jwt = auth.isAuthenticated();
         create(
           { userId: jwt.user._id },
@@ -66,9 +68,11 @@ const PlaceOrder = (props) => {
           payload.token.id
         ).then((data) => {
           if (data.error) {
+            console.log('error',data)
             setValues({ ...values, error: data.error });
           } else {
             cart.emptyCart(() => {
+              console.log('best');
               setValues({ ...values, orderId: data._id, redirect: true });
             });
           }

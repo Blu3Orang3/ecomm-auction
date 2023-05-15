@@ -3,13 +3,6 @@ import Grid from '@mui/material/Grid';
 import { makeStyles } from '@mui/styles';
 import CartItems from './CartItems';
 import Checkout from './Checkout';
-import { Elements } from '@stripe/react-stripe-js';
-import { loadStripe } from '@stripe/stripe-js';
-import config from '../../config/config';
-
-
-const stripePromise = loadStripe(config.stripe_test_api_key);
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,9 +27,7 @@ export default function Cart() {
         </Grid>
         {checkout && (
           <Grid item xs={6} sm={6}>
-            <Elements stripe={stripePromise}>
-              <Checkout />
-            </Elements>
+            <Checkout />
           </Grid>
         )}
       </Grid>
