@@ -19,13 +19,16 @@ import MainRouter from './../client/MainRouter';
 import { ServerStyleSheets } from '@mui/styles';
 import { ThemeProvider } from '@mui/material/styles';
 import theme from './../client/theme';
-import config from "../config/config";
+import config from '../config/config';
 //end
+import Stripe from 'stripe';
 
 const CURRENT_WORKING_DIR = process.cwd();
 const app = express();
 
-const stripe = require("stripe")(config.stripe_test_secret_key);
+export const stripe = new Stripe(config.stripe_test_secret_key, {
+  apiVersion: '2020-03-02',
+});
 
 // comment out before building
 devBundle.compile(app);
@@ -35,11 +38,27 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(compress());
-// secure apps by setting various HTTP headers
-app.use(helmet({ contentSecurityPolicy: false }));
+// // secure apps by setting various HTTP headers
+app.use(
+  helmet.contentSecurityPolicy({
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'",  'https://js.stripe.com'],
+      workerSrc: ['blob:'],
+      objectSrc: ["'none'"],
+      styleSrc: ["'self'", 'https:', "'unsafe-inline'"],
+      fontSrc: ["'self'", 'https:', 'data:'],
+      imgSrc: ["'self'", 'data:'],
+      connectSrc: [
+        "'self'",
+        'https://checkout.stripe.com',
+      ],
+      frameSrc: ["'self'", 'https://js.stripe.com', 'https://hooks.stripe.com'],
+    },
+  })
+);
 // enable CORS - Cross Origin Resource Sharing
-app.use(cors());
-
+app.use(cors({ origin: true }));
 
 app.use('/dist', express.static(path.join(CURRENT_WORKING_DIR, 'dist')));
 
@@ -77,7 +96,6 @@ app.use('/', productRoutes);
 //     },
 //   })
 // );
-
 
 app.get('*', (req, res) => {
   const sheets = new ServerStyleSheets();
