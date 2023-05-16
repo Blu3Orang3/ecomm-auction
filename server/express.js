@@ -10,6 +10,7 @@ import devBundle from './devBundle';
 import userRoutes from './routes/user.routes';
 import authRoutes from './routes/auth.routes';
 import shopRoutes from './routes/shop.routes';
+import orderRoutes from './routes/order.routes';
 import productRoutes from './routes/product.routes';
 //server-side rendering
 import React from 'react';
@@ -67,6 +68,7 @@ app.use('/', userRoutes);
 app.use('/', authRoutes);
 app.use('/', shopRoutes);
 app.use('/', productRoutes);
+app.use('/',orderRoutes);
 
 // app.use(
 //   helmet.contentSecurityPolicy({
