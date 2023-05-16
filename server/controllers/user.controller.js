@@ -4,8 +4,7 @@ import axios from 'axios';
 import config from './../../config/config';
 import stripe from 'stripe';
 import errorHandler from './../helpers/dbErrorHandler';
-const myStripe = stripe(config.stripe_test_secret_key)
-
+const myStripe = stripe(config.stripe_test_secret_key);
 
 const create = async (req, res) => {
   const user = new User(req.body);
@@ -62,10 +61,17 @@ const update = async (req, res) => {
     //extend and merge the changes that came in the request body
     user = extend(user, req.body);
     user.updated = Date.now();
-    await user.save();
-    user.hashed_password = undefined;
-    user.salt = undefined;
-    res.json(user);
+    // await user.save();
+    // Update the user using findOneAndUpdate
+    const updatedUser = await User.findOneAndUpdate(
+      { _id: user._id }, // Query to find the user to update
+      user, // Updated user data
+      { new: true } // Return the updated user object
+    );
+
+    updatedUser.hashed_password = undefined;
+    updatedUser.salt = undefined;
+    res.json(updatedUser);
   } catch (err) {
     return res.status(400).json({
       error: errorHandler.getErrorMessage(err),
@@ -122,6 +128,7 @@ const stripe_auth = async (req, res, next) => {
 };
 
 const stripeCustomer = (req, res, next) => {
+  console.info(req.body,"req--first")
   if (req.profile.stripe_customer) {
     //update stripe customer
     myStripe.customers.update(
@@ -136,55 +143,68 @@ const stripeCustomer = (req, res, next) => {
           });
         }
         req.body.order.payment_id = customer.id;
+        console.info('wrong reach')
         next();
       }
     );
   } else {
+    console.info(req.body,"req-body")
     myStripe.customers
       .create({
         email: req.profile.email,
         source: req.body.token,
       })
       .then((customer) => {
-        User.update(
-          { _id: req.profile._id },
-          { $set: { stripe_customer: customer.id } },
-          (err, order) => {
-            if (err) {
-              return res.status(400).send({
-                error: errorHandler.getErrorMessage(err),
-              });
-            }
-            req.body.order.payment_id = customer.id;
-            next();
-          }
-        );
+        try {
+          console.info('reached-costumer')
+          User.updateOne(
+            { _id: req.profile._id },
+            { $set: { stripe_customer: customer.id } }
+          );
+          req.body.order.payment_id = customer.id;
+          next();
+        } catch (err) {
+          console.info('notreached-costumer')
+          return res.status(400).send({
+            error: errorHandler.getErrorMessage(err),
+          });
+        }
       });
   }
 };
 
 const createCharge = (req, res, next) => {
-  if(!req.profile.stripe_seller){
+  if (!req.profile.stripe_seller) {
     return res.status('400').json({
-      error: "Please connect your Stripe account"
-    })
+      error: 'Please connect your Stripe account',
+    });
   }
-  myStripe.tokens.create({
-    customer: req.order.payment_id,
-  }, {
-    stripeAccount: req.profile.stripe_seller.stripe_user_id,
-  }).then((token) => {
-      myStripe.charges.create({
-        amount: req.body.amount * 100, //amount in cents
-        currency: "usd",
-        source: token.id,
-      }, {
+  myStripe.tokens
+    .create(
+      {
+        customer: req.order.payment_id,
+      },
+      {
         stripeAccount: req.profile.stripe_seller.stripe_user_id,
-      }).then((charge) => {
-        next()
-      })
-  })
-}
+      }
+    )
+    .then((token) => {
+      myStripe.charges
+        .create(
+          {
+            amount: req.body.amount * 100, //amount in cents
+            currency: 'usd',
+            source: token.id,
+          },
+          {
+            stripeAccount: req.profile.stripe_seller.stripe_user_id,
+          }
+        )
+        .then((charge) => {
+          next();
+        });
+    });
+};
 
 export default {
   create,
@@ -196,5 +216,5 @@ export default {
   isSeller,
   stripe_auth,
   stripeCustomer,
-  createCharge
+  createCharge,
 };
