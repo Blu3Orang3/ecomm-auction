@@ -50,14 +50,12 @@ const PlaceOrder = (props) => {
   });
 
 
-  const placeOrder = (props) => {
+  const placeOrder = () => {
     const cardElement = elements.getElement(CardElement);
     stripe.createToken(cardElement).then((payload) => {
       if (payload.error) {
-        console.log('fail-----');
         setValues({ ...values, error: payload.error.message });
       } else {
-        console.log('pass1',payload)
         const jwt = auth.isAuthenticated();
         create(
           { userId: jwt.user._id },
@@ -68,11 +66,9 @@ const PlaceOrder = (props) => {
           payload.token.id
         ).then((data) => {
           if (data.error) {
-            console.log('error',data)
             setValues({ ...values, error: data.error });
           } else {
             cart.emptyCart(() => {
-              console.log('best');
               setValues({ ...values, orderId: data._id, redirect: true });
             });
           }
