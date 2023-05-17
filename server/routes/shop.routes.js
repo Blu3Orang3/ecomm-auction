@@ -26,6 +26,12 @@ router
   .route('/api/shops/:shopId')
   .delete(authCtrl.requireSignin, shopCtrl.isOwner, shopCtrl.remove);
 
+router
+  .route('/api/shops/logo/:shopId')
+  .get(shopCtrl.photo, shopCtrl.defaultPhoto);
+
+router.route('/api/shops/defaultphoto').get(shopCtrl.defaultPhoto);
+
 router.param('shopId', shopCtrl.shopByID);
 router.param('userId', userCtrl.userByID);
 

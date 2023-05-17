@@ -7,12 +7,12 @@ import { stripeUpdate } from './api-user.js';
 import auth from './../auth/auth-helper';
 
 const useStyles = makeStyles((theme) => ({
-  root: theme.mixins.gutters({
+  root:{
     maxWidth: 600,
     margin: 'auto',
     padding: theme.spacing(3),
     marginTop: theme.spacing(5),
-  }),
+  },
   title: {
     margin: `${theme.spacing(3)}px 0 ${theme.spacing(2)}px ${theme.spacing(
       2
@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function StripeConnect(props) {
+export default function StripeConnect() {
   const classes = useStyles();
   const [values, setValues] = useState({
     error: false,
@@ -38,7 +38,7 @@ export default function StripeConnect(props) {
     const abortController = new AbortController();
     const signal = abortController.signal;
 
-    const parsed = queryString.parse(props.location.search);
+    const parsed = queryString.parse(location.search);
     if (parsed.error) {
       setValues({ ...values, error: true });
     }
@@ -55,6 +55,7 @@ export default function StripeConnect(props) {
         parsed.code,
         signal
       ).then((data) => {
+       
         if (data.error) {
           setValues({
             ...values,
