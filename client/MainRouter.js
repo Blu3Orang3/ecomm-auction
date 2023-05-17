@@ -16,6 +16,8 @@ import NewProduct from './product/NewProduct';
 import EditProduct from './product/EditProduct';
 import Product from './product/Product';
 import Cart from './cart/Cart';
+import ShopOrders from "./order/ShopOrders";
+import Order from "./order/Order";
 import StripeConnect from './user/StripeConnect';
 import Menu from './core/Menu';
 //astripe
@@ -58,19 +60,24 @@ const MainRouter = () => {
             element={<PrivateRoute component={NewProduct} />}
           />
 
+          <Route
+            path='/seller/orders/:shop/:shopId'
+            element={<PrivateRoute component={ShopOrders} />}
+          />
+          <Route
+            path='/seller/:shopId/:productId/edit'
+            element={<PrivateRoute component={EditProduct} />}
+          />
+          <Route path='/seller/stripe/connect' element={<StripeConnect />} />
+
           <Route path='/shops/:shopId' element={<Shop />} />
           <Route path='/shops/all' element={<Shops />} />
           <Route path='/user/:userId' element={<Profile />} />
 
           <Route path='/product/:productId' element={<Product />} />
-          <Route
-            path='/seller/:shopId/:productId/edit'
-            element={<PrivateRoute component={EditProduct} />}
-          />
+          <Route path="/order/:orderId" element={<Order />}/>
 
           <Route path='/cart' element={<Cart />} />
-
-          <Route path='/seller/stripe/connect' element={<StripeConnect />} />
         </Routes>
       </div>
     </Elements>

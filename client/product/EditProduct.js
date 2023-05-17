@@ -114,7 +114,7 @@ export default function EditProduct() {
       },
       productData
     ).then((data) => {
-      if (data.error) {
+      if (data.error) {     
         setValues({ ...values, error: data.error });
       } else {
         setValues({ ...values, redirect: true });

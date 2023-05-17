@@ -9,6 +9,7 @@ import ListItemText from '@mui/material/ListItemText';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
+import  Button  from "@mui/material/Button";
 import Edit from '@mui/icons-material/Edit';
 import Person from '@mui/icons-material/Person';
 import Divider from '@mui/material/Divider';
@@ -18,7 +19,7 @@ import { read } from './api-user.js';
 import { Navigate, Link, useParams } from 'react-router-dom';
 import config from './../../config/config';
 import stripeButton from './../assets/images/stripeButton.png';
-// import MyOrders from './../order/MyOrders';
+import MyOrders from './../order/MyOrders';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -120,7 +121,7 @@ export default function Profile() {
           />
         </ListItem>
       </List>
-      {/* <MyOrders /> */}
+      <MyOrders />
     </Paper>
   );
 }
